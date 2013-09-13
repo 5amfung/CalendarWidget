@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Use for today text color. -->
+    <color name="white">#fff</color>
+    
+    <!-- Use for today. -->
+    <color name="red">#f00</color>
+    
+    <!-- Use for all text color except current month. -->
+    <color name="translusent_white">#5fff</color>
+
+    <!-- Use for current month background. -->
+    <color name="transparent_white">#1fff</color>
+</resources>
