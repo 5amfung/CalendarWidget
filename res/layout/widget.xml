@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_weight="1"
-            android:textSize="24sp" />
+            android:textSize="24sp"/>
             
         <ImageButton
             android:id="@+id/next_month_button"
@@ -37,10 +37,33 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal" >
+        
+        <TextView
+            style="@style/cell"
+            android:text="@string/sunday"/>
+        <TextView
+            style="@style/cell"
+            android:text="@string/monday"/>
+        <TextView
+            style="@style/cell"
+            android:text="@string/tuesday"/>
+        <TextView
+            style="@style/cell"
+            android:text="@string/wednesday"/>
+        <TextView
+            style="@style/cell"
+            android:text="@string/thursday"/>
+        <TextView
+            style="@style/cell"
+            android:text="@string/friday"/>
+        <TextView
+            style="@style/cell"
+            android:text="@string/saturday"/>
+        
+            
     </LinearLayout>
 
     <LinearLayout
