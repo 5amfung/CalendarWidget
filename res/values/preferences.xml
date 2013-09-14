@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="preference_file_key">co.sfng.android.calendarwidget.PREFERENCE_WIDGET_%d</string>
-    <string name="selected_time">selected_time</string>
-    
-</resources>
