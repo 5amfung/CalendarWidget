@@ -1,4 +1,4 @@
-package co.sfng.android.calendarwidget;
+package co.sfng.calendarwidget;
 
 import java.util.Calendar;
 
@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,14 +21,14 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 	private static final String LOG_TAG = CalendarWidgetProvider.class.toString();
 	private static final String ACTION_PREVIOUS_MONTH =
-			"co.sfng.android.calendarwidget.ACTION_PREVIOUS_MONTH";
+			"co.sfng.calendarwidget.ACTION_PREVIOUS_MONTH";
 	private static final String ACTION_NEXT_MONTH =
-			"co.sfng.android.calendarwidget.ACTION_NEXT_MONTH";
+			"co.sfng.calendarwidget.ACTION_NEXT_MONTH";
 	private static final String ACTION_TODAY =
-			"co.sfng.android.calendarwidget.ACTION_TODAY";
+			"co.sfng.calendarwidget.ACTION_TODAY";
 
 	private static final String PREFERENCE_FILE =
-			"co.sfng.android.calendarwidget.PREFERENCE_WIDGET_";
+			"co.sfng.calendarwidget.PREFERENCE_WIDGET_";
 	private static final String SELECTED_TIME = "selected_time";
 
 	private static final int WEEKS = 6;
@@ -38,6 +39,9 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 			int appWidgetId, Bundle newOptions) {
 		Log.i(LOG_TAG, "onAppWidgetOptionsChanged()");
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,	newOptions);
+
+		// TODO: Check size and store isWidgetWide flag in SharedPreferences.
+
 		render(context, appWidgetId);
 	}
 
@@ -51,21 +55,6 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 	}
 
 	@Override
-	public void onReceive(Context context, Intent intent) {
-		super.onReceive(context, intent);
-		String action = intent.getAction();
-		Log.i(LOG_TAG, "action = " + action);
-
-		if (ACTION_PREVIOUS_MONTH.equals(action)) {
-
-		} else if (ACTION_NEXT_MONTH.equals(action)) {
-
-		} else if (ACTION_TODAY.equals(action)) {
-
-		}
-	}
-
-	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
 		Log.i(LOG_TAG, "onDeleted()");
 		super.onDeleted(context, appWidgetIds);
@@ -73,13 +62,59 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		for (int appWidgetId: appWidgetIds) {
 			Log.i(LOG_TAG, "Clear all preferences for widget ID " + appWidgetId);
 			SharedPreferences pref = context.getSharedPreferences(
-					getPreferenceFileName(context, appWidgetId), Context.MODE_PRIVATE);
-			SharedPreferences.Editor editor = pref.edit();
-			editor.clear().apply();
+					getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
+			pref.edit().clear().apply();
 		}
 	}
 
-	private String getPreferenceFileName(Context context, int appWidgetId) {
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		super.onReceive(context, intent);
+
+		String action = intent.getAction();
+		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+		int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
+				new ComponentName(context, CalendarWidgetProvider.class));
+
+		if (ACTION_PREVIOUS_MONTH.equals(action)) {
+			previousMonth(context, appWidgetManager, appWidgetIds);
+		} else if (ACTION_NEXT_MONTH.equals(action)) {
+			nextMonth(context, appWidgetManager, appWidgetIds);
+		} else if (ACTION_TODAY.equals(action)) {
+			today(context, appWidgetManager, appWidgetIds);
+		}
+	}
+
+	private void nextMonth(Context context, AppWidgetManager appWidgetManager,
+			int[] appWidgetIds) {
+		for (int appWidgetId: appWidgetIds) {
+			// TODO
+			Log.i(LOG_TAG, "next month " + appWidgetId);
+			render(context, appWidgetId);
+		}
+	}
+
+	private void previousMonth(Context context, AppWidgetManager appWidgetManager,
+			int[] appWidgetIds) {
+		for (int appWidgetId: appWidgetIds) {
+			// TODO
+			Log.i(LOG_TAG, "prev month " + appWidgetId);
+			render(context, appWidgetId);
+		}
+	}
+
+	private void today(Context context, AppWidgetManager appWidgetManager,
+			int[] appWidgetIds) {
+		for (int appWidgetId: appWidgetIds) {
+			Log.i(LOG_TAG, "today " + appWidgetId);
+			SharedPreferences pref = context.getSharedPreferences(
+					getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
+			pref.edit().clear().apply();
+			render(context, appWidgetId);
+		}
+	}
+
+	private String getPreferenceFileName(int appWidgetId) {
 		return PREFERENCE_FILE + appWidgetId;
 	}
 
@@ -87,8 +122,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		// TODO:
 		//   x Update current month-year label.
 		//   x Render current month (6 weeks).
-		//   - Attach action to month label.
-		//   - Attach action to previous and next button.
+		//   x Attach action to month label.
+		//   x Attach action to previous and next button.
 		//   - Store selected month.  If displayed month is current, no need to store.
 		//     Always show current month if no month is stored in SharedPreference.
 
@@ -100,7 +135,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		int todayYear = cal.get(Calendar.YEAR);
 
 		SharedPreferences pref = context.getSharedPreferences(
-				getPreferenceFileName(context, appWidgetId), Context.MODE_PRIVATE);
+				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
 		long selectedTime = pref.getLong(SELECTED_TIME, cal.getTimeInMillis());
 		cal.setTimeInMillis(selectedTime);
 
@@ -155,11 +190,4 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
     	intent.setAction(action);
     	return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
-
-
-
-
-
-
-
 }
