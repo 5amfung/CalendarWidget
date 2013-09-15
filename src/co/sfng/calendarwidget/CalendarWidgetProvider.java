@@ -30,8 +30,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 	private static final String PREFERENCE_FILE =
 			"co.sfng.calendarwidget.PREFERENCE_WIDGET_";
-	private static final String SELECTED_TIME = "selected_time";
-	private static final String IS_WIDE = "is_wide";
+	private static final String PREF_SELECTED_TIME = "selected_time";
+	private static final String PREF_IS_WIDE = "is_wide";
 
 	private static final int WEEKS = 6;
 
@@ -53,7 +53,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 			SharedPreferences pref = context.getSharedPreferences(
 					getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-			pref.edit().putBoolean(IS_WIDE, isWide).apply();
+			pref.edit().putBoolean(PREF_IS_WIDE, isWide).apply();
 		}
 
 		render(context, appWidgetId);
@@ -85,7 +85,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 		String action = intent.getAction();
-		int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+		int appWidgetId = intent.getIntExtra(
+				AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
 		if (ACTION_PREVIOUS_MONTH.equals(action)) {
 			previousMonth(context, appWidgetManager, appWidgetId);
@@ -101,9 +102,9 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		SharedPreferences pref = context.getSharedPreferences(
 				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(pref.getLong(SELECTED_TIME, cal.getTimeInMillis()));
+		cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
 		cal.add(Calendar.MONTH, -1);
-		pref.edit().putLong(SELECTED_TIME, cal.getTimeInMillis()).apply();
+		pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
 		render(context, appWidgetId);
 	}
 
@@ -112,9 +113,9 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		SharedPreferences pref = context.getSharedPreferences(
 				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(pref.getLong(SELECTED_TIME, cal.getTimeInMillis()));
+		cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
 		cal.add(Calendar.MONTH, 1);
-		pref.edit().putLong(SELECTED_TIME, cal.getTimeInMillis()).apply();
+		pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
 		render(context, appWidgetId);
 	}
 
@@ -122,7 +123,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 			int appWidgetId) {
 		SharedPreferences pref = context.getSharedPreferences(
 				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-		pref.edit().remove(SELECTED_TIME).apply();
+		pref.edit().remove(PREF_SELECTED_TIME).apply();
 		render(context, appWidgetId);
 	}
 
@@ -140,13 +141,13 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		// Obtain last selected time from SharedPreferences.
 		SharedPreferences pref = context.getSharedPreferences(
 				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-		long selectedTime = pref.getLong(SELECTED_TIME, cal.getTimeInMillis());
+		long selectedTime = pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis());
 		cal.setTimeInMillis(selectedTime);
 
 		RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget);
 		widgetView.removeAllViews(R.id.calendar);
 
-		if (pref.getBoolean(IS_WIDE, false)) {
+		if (pref.getBoolean(PREF_IS_WIDE, false)) {
 			widgetView.setTextViewText(R.id.month_year_label, DateFormat.format("MMMM yyyy", cal));
 		} else {
 			widgetView.setTextViewText(R.id.month_year_label, DateFormat.format("MMM yyyy", cal));
