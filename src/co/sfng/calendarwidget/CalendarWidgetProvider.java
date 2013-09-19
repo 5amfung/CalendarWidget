@@ -13,13 +13,10 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 
 public class CalendarWidgetProvider extends AppWidgetProvider {
-
-	private static final String LOG_TAG = CalendarWidgetProvider.class.toString();
 
 	private static final String ACTION_PREVIOUS_MONTH =
 			"co.sfng.calendarwidget.ACTION_PREVIOUS_MONTH";
@@ -46,7 +43,6 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 		if (bundle != null) {
 			int minWidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-			Log.i(LOG_TAG, "minWidth = " + minWidth);
 
 			Resources res = context.getResources();
 			boolean isWide = minWidth > res.getInteger(R.integer.minimum_wide_width);
@@ -132,8 +128,6 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 	}
 
 	private void render(Context context, int appWidgetId) {
-		Log.i(LOG_TAG, "render() for app widget ID " + appWidgetId);
-
 		Calendar cal = Calendar.getInstance();
 		int today = cal.get(Calendar.DAY_OF_YEAR);
 		int todayYear = cal.get(Calendar.YEAR);
