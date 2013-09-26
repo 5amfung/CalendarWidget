@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Month Day Calendar Widget</string>
+    <string name="app_name">Calendar Widget</string>
     <string name="previous_month">Previous month</string>
     <string name="next_month">Next month</string>
  

@@ -35,3 +35,4 @@ project.properties
 ant.properties
 build.xml
 proguard-project.txt
+keystore
