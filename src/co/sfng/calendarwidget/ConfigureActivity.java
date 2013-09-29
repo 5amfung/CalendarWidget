@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,19 +19,20 @@ public class ConfigureActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Initialize SharedPreferences with default values if it hasn't been already.
+		PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
+
 		setContentView(R.layout.appwidget_settings);
-		findViewById(R.id.ok_button).setOnClickListener(mOnOkClickListener);
-		findViewById(R.id.cancel_button).setOnClickListener(mOnCancelClickListener);
+		findViewById(R.id.ok_button).setOnClickListener(mOnClickListener);
 
 		Log.i(TAG, "onCreate()");
 	}
 
-	private OnClickListener mOnOkClickListener = new OnClickListener() {
+	private OnClickListener mOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			Log.i(TAG, "Ok button is clicked.");
-
-			// TODO: Save settings to SharedPreferences.
 
 			// Obtain all app widget IDs.
 			Context context = getApplicationContext();
@@ -48,10 +50,4 @@ public class ConfigureActivity extends Activity {
 		}
 	};
 
-	private OnClickListener mOnCancelClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			finish();
-		}
-	};
 }
