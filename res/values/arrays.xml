@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Themes used in Settings. -->
+    <string-array name="themes">
+        <item name="dktheme">Dark theme</item>
+        <item name="lttheme">Light theme</item>
+    </string-array>
+    
+    <!-- Theme values used in Settings. -->
+    <string-array name="theme_values">
+        <item name="dktheme">0</item>
+        <item name="lttheme">1</item>
+    </string-array>
+
+</resources>

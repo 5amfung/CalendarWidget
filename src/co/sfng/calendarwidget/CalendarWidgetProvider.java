@@ -1,7 +1,5 @@
 package co.sfng.calendarwidget;
 
-import java.util.Calendar;
-
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -15,6 +13,8 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import java.util.Calendar;
 
 
 public class CalendarWidgetProvider extends AppWidgetProvider {

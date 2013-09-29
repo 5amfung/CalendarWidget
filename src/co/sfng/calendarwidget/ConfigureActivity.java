@@ -20,7 +20,7 @@ public class ConfigureActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Initialize SharedPreferences with default values if it hasn't been already.
+		// Initialize SharedPreferences with default values if it hasn't already.
 		PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
 
 		setContentView(R.layout.appwidget_settings);
