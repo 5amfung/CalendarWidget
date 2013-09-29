@@ -1,5 +1,13 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <color name="translusent_white">#7fff</color>
+    <color name="transparent_white">#3fff</color>
+    <color name="translusent_black">#7000</color>
+    <color name="transparent_black">#3000</color>
+    <color name="red">#f00</color>
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
+    
     <style name="cell">
         <item name="android:id">@android:id/text1</item>
         <item name="android:layout_width">0dp</item>
@@ -7,7 +15,36 @@
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/translusent_white</item>
     </style>
 
+    <!-- Light theme for text in cell. -->
+    <style name="cell_light" parent="@style/cell">
+        <item name="android:textColor">@color/translusent_black</item>  
+    </style>
+    
+    <style name="cell_today_light" parent="@style/cell">
+        <item name="android:background">@color/transparent_black</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+    
+    <style name="cell_in_month_light" parent="@style/cell">
+        <item name="android:background">@color/transparent_black</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <!-- Dark theme for text in cell. -->
+    <style name="cell_dark" parent="@style/cell">
+        <item name="android:textColor">@color/translusent_white</item>
+    </style>
+    
+    <style name="cell_today_dark" parent="@style/cell">
+        <item name="android:background">@color/transparent_white</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+    
+    <style name="cell_in_month_dark" parent="@style/cell">
+        <item name="android:background">@color/transparent_white</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    
 </resources>

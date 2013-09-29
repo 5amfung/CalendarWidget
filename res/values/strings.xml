@@ -17,6 +17,6 @@
     
     <!-- Used in Settings. -->
     <string name="theme">Theme</string>
-    <string name="theme_summary">Choose a theme</string>
+    <string name="theme_summary">Choose a dark theme or a light theme</string>
     
 </resources>

@@ -10,16 +10,14 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.util.Calendar;
 
 
 public class CalendarWidgetProvider extends AppWidgetProvider {
-
-	private static final String TAG = CalendarWidgetProvider.class.toString();
 
 	private static final String ACTION_PREVIOUS_MONTH =
 			"co.sfng.calendarwidget.ACTION_PREVIOUS_MONTH";
@@ -39,8 +37,6 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
 			int appWidgetId, Bundle newOptions) {
-		Log.i(TAG, "onAppWidgetOptionsChanged()");
-
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,	newOptions);
 
 		// Obtain widget width and set flag in SharePreferences.
@@ -57,24 +53,22 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 			pref.edit().putBoolean(PREF_IS_WIDE, isWide).apply();
 		}
 
-		render(context, appWidgetId);
+		render(context, appWidgetId, getTheme(context));
 	}
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-		Log.i(TAG, "onUpdate()");
-
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 
+		int theme = getTheme(context);
+
 		for (int appWidgetId: appWidgetIds) {
-			render(context, appWidgetId);
+			render(context, appWidgetId, theme);
 		}
 	}
 
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
-		Log.i(TAG, "onDeleted()");
-
 		super.onDeleted(context, appWidgetIds);
 
 		for (int appWidgetId: appWidgetIds) {
@@ -86,8 +80,6 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.i(TAG, "onReceive()");
-
 		super.onReceive(context, intent);
 
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -112,7 +104,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
 		cal.add(Calendar.MONTH, -1);
 		pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
-		render(context, appWidgetId);
+		render(context, appWidgetId, getTheme(context));
 	}
 
 	private void nextMonth(Context context, AppWidgetManager appWidgetManager,
@@ -123,7 +115,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
 		cal.add(Calendar.MONTH, 1);
 		pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
-		render(context, appWidgetId);
+		render(context, appWidgetId, getTheme(context));
 	}
 
 	private void today(Context context, AppWidgetManager appWidgetManager,
@@ -131,14 +123,20 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		SharedPreferences pref = context.getSharedPreferences(
 				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
 		pref.edit().remove(PREF_SELECTED_TIME).apply();
-		render(context, appWidgetId);
+		render(context, appWidgetId, getTheme(context));
 	}
 
 	private String getPreferenceFileName(int appWidgetId) {
 		return PREFERENCE_FILE + appWidgetId;
 	}
 
-	private void render(Context context, int appWidgetId) {
+	private int getTheme(Context context) {
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		return Integer.parseInt(
+				pref.getString(context.getResources().getString(R.string.pref_theme), "0"));
+	}
+
+	private void render(Context context, int appWidgetId, int theme) {
 		Calendar cal = Calendar.getInstance();
 		int today = cal.get(Calendar.DAY_OF_YEAR);
 		int todayYear = cal.get(Calendar.YEAR);
@@ -149,7 +147,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		long selectedTime = pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis());
 		cal.setTimeInMillis(selectedTime);
 
-		RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget);
+		RemoteViews widgetView = new RemoteViews(
+				context.getPackageName(), ResourceHelper.layoutWidget(theme));
 		widgetView.removeAllViews(R.id.calendar);
 
 		if (pref.getBoolean(PREF_IS_WIDE, false)) {
@@ -169,15 +168,15 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 			RemoteViews rowView = new RemoteViews(context.getPackageName(), R.layout.row_week);
 
 			for (int y = 0; y < 7; y++) {
-				boolean isToday = cal.get(Calendar.DAY_OF_YEAR) == today &&
-							cal.get(Calendar.YEAR) == todayYear;
 				boolean inSelectedMonth = cal.get(Calendar.MONTH) == selectedMonth;
+				boolean isToday = cal.get(Calendar.DAY_OF_YEAR) == today &&
+							cal.get(Calendar.YEAR) == todayYear && inSelectedMonth;
 
-				int layoutId = R.layout.cell_day;
+				int layoutId = ResourceHelper.layoutCellDay(theme);
 				if (isToday) {
-					layoutId = R.layout.cell_today;
+					layoutId = ResourceHelper.layoutCellToday(theme);
 				} else if (inSelectedMonth) {
-					layoutId = R.layout.cell_current_month_day;
+					layoutId = ResourceHelper.layoutCellInMonth(theme);
 				}
 
 				RemoteViews dateView = new RemoteViews(context.getPackageName(), layoutId);

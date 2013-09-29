@@ -21,7 +21,7 @@
                 android:resource="@xml/appwidget_info" />
         </receiver>
         
-        <activity android:name="ConfigureActivity">
+        <activity android:name="AppWidgetConfigureActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

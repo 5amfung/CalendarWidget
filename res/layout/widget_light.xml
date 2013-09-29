@@ -15,16 +15,17 @@
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:contentDescription="@string/previous_month"
-            android:src="@drawable/ic_previous" />
+            android:src="@drawable/ic_action_previous_light" />
 
         <Button
             android:id="@+id/month_year_label"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:layout_weight="1"
-            android:textSize="24sp"/>
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
             
         <ImageButton
             android:id="@+id/next_month_button"
@@ -32,7 +33,7 @@
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:contentDescription="@string/next_month"
-            android:src="@drawable/ic_next" />
+            android:src="@drawable/ic_action_next_light" />
 
     </LinearLayout>
 
@@ -42,25 +43,25 @@
         android:orientation="horizontal" >
         
         <TextView
-            style="@style/cell"
+            style="@style/cell_light"
             android:text="@string/sunday"/>
         <TextView
-            style="@style/cell"
+            style="@style/cell_light"
             android:text="@string/monday"/>
         <TextView
-            style="@style/cell"
+            style="@style/cell_light"
             android:text="@string/tuesday"/>
         <TextView
-            style="@style/cell"
+            style="@style/cell_light"
             android:text="@string/wednesday"/>
         <TextView
-            style="@style/cell"
+            style="@style/cell_light"
             android:text="@string/thursday"/>
         <TextView
-            style="@style/cell"
+            style="@style/cell_light"
             android:text="@string/friday"/>
         <TextView
-            style="@style/cell"
+            style="@style/cell_light"
             android:text="@string/saturday"/>
         
             

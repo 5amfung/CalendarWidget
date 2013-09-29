@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/previous_month_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/previous_month"
+            android:src="@drawable/ic_action_previous_dark" />
+
+        <Button
+            android:id="@+id/month_year_label"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="24sp"/>
+            
+        <ImageButton
+            android:id="@+id/next_month_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/next_month"
+            android:src="@drawable/ic_action_next_dark" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView
+            style="@style/cell_dark"
+            android:text="@string/sunday"/>
+        <TextView
+            style="@style/cell_dark"
+            android:text="@string/monday"/>
+        <TextView
+            style="@style/cell_dark"
+            android:text="@string/tuesday"/>
+        <TextView
+            style="@style/cell_dark"
+            android:text="@string/wednesday"/>
+        <TextView
+            style="@style/cell_dark"
+            android:text="@string/thursday"/>
+        <TextView
+            style="@style/cell_dark"
+            android:text="@string/friday"/>
+        <TextView
+            style="@style/cell_dark"
+            android:text="@string/saturday"/>
+        
+            
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1" >
+    </LinearLayout>
+
+</LinearLayout>

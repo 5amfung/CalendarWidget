@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/cell"
-    android:background="@color/transparent_white"
-    android:textColor="#f00">
+    style="@style/cell_in_month_light">
 </TextView>
