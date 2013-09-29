@@ -32,11 +32,13 @@ public class ConfigureActivity extends Activity {
 
 			// TODO: Save settings to SharedPreferences.
 
+			// Obtain all app widget IDs.
 			Context context = getApplicationContext();
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 			ComponentName cn = new ComponentName(context, CalendarWidgetProvider.class);
 			int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cn);
 
+			// Broadcast update action to all running app widgets.
 			Intent intent = new Intent();
 			intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
