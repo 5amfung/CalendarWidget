@@ -21,6 +21,13 @@
                 android:resource="@xml/appwidget_info" />
         </receiver>
         
+        <activity android:name="ConfigureActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        
     </application>
 
 </manifest>

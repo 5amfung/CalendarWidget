@@ -13,10 +13,13 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 
 public class CalendarWidgetProvider extends AppWidgetProvider {
+
+	private static final String TAG = CalendarWidgetProvider.class.toString();
 
 	private static final String ACTION_PREVIOUS_MONTH =
 			"co.sfng.calendarwidget.ACTION_PREVIOUS_MONTH";
@@ -36,6 +39,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
 			int appWidgetId, Bundle newOptions) {
+		Log.i(TAG, "onAppWidgetOptionsChanged()");
+
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,	newOptions);
 
 		// Obtain widget width and set flag in SharePreferences.
@@ -57,6 +62,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+		Log.i(TAG, "onUpdate()");
+
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 
 		for (int appWidgetId: appWidgetIds) {
@@ -66,6 +73,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
+		Log.i(TAG, "onDeleted()");
+
 		super.onDeleted(context, appWidgetIds);
 
 		for (int appWidgetId: appWidgetIds) {
@@ -77,6 +86,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		Log.i(TAG, "onReceive()");
+
 		super.onReceive(context, intent);
 
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
