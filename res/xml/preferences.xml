@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:key="font_color"
+        android:title="@string/font_color"
+        android:summary="@string/font_color_summary"
+        android:defaultValue="ffffffff" 
+        android:entries="@array/font_color_entries" 
+        android:entryValues="@array/font_color_values"/>
+    
+    <ListPreference
+        android:key="today_font_color"
+        android:title="@string/today_font_color"
+        android:summary="@string/today_font_color_summary"
+        android:defaultValue="ffff0000" 
+        android:entries="@array/font_color_entries"
+        android:entryValues="@array/font_color_values"/>
+
+</PreferenceScreen>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <!-- android.graphices.Color -->
+    
+   <string-array name="font_color_entries">
+        <item name="black">@string/black</item>
+        <item name="blue">@string/blue</item>
+        <item name="cyan">@string/cyan</item>
+        <item name="dkgray">@string/dkgray</item>
+        <item name="gray">@string/gray</item>
+        <item name="green">@string/green</item>
+        <item name="ltgray">@string/ltgray</item>
+        <item name="magenta">@string/magenta</item>
+        <item name="red">@string/red</item>
+        <item name="white">@string/white</item>
+        <item name="yellow">@string/yellow</item>
+    </string-array>
+    
+    <string-array name="font_color_values">
+        <item name="black">ff000000</item>
+        <item name="blue">ff0000ff</item>
+        <item name="cyan">ff00ffff</item>
+        <item name="dkgray">ff444444</item>
+        <item name="gray">ff888888</item>
+        <item name="green">ff00ff00</item>
+        <item name="ltgray">ffcccccc</item>
+        <item name="magenta">ffff00ff</item>
+        <item name="red">ffff0000</item>
+        <item name="white">ffffffff</item>
+        <item name="yellow">ffffff00</item>
+    </string-array>
+
+</resources>
