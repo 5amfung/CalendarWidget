@@ -13,4 +13,14 @@
         <item name="lttheme">1</item>
     </string-array>
 
+    <string-array name="week_start_day">
+        <item name="sunday">Sunday</item>
+        <item name="monday">Monday</item>
+    </string-array>
+
+    <string-array name="week_start_day_values">
+        <item name="sunday">1</item>
+        <item name="monday">2</item>
+    </string-array>
+    
 </resources>

@@ -9,4 +9,12 @@
         android:entries="@array/themes" 
         android:entryValues="@array/theme_values"/>
     
+    <ListPreference 
+        android:key="@string/pref_week_start_day"
+        android:title="@string/week_start_day"
+        android:summary="@string/week_start_day_summary"
+        android:defaultValue="1"
+        android:entries="@array/week_start_day"
+        android:entryValues="@array/week_start_day_values"/>
+        
 </PreferenceScreen>
