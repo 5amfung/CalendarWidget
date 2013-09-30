@@ -33,11 +33,13 @@ public class AppWidgetConfigureActivity extends Activity {
 			ComponentName cn = new ComponentName(context, CalendarWidgetProvider.class);
 			int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cn);
 
-			// Broadcast update action to all running app widgets.
-			Intent intent = new Intent();
-			intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-			context.sendBroadcast(intent);
+			if (appWidgetIds != null && appWidgetIds.length != 0) {
+				// Broadcast update action to all running app widgets.
+				Intent intent = new Intent();
+				intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+				context.sendBroadcast(intent);
+			}
 
 			finish();
 		}
