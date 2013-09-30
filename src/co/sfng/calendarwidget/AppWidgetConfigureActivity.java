@@ -35,7 +35,7 @@ public class AppWidgetConfigureActivity extends Activity {
 
 			if (appWidgetIds != null && appWidgetIds.length != 0) {
 				// Broadcast update action to all running app widgets.
-				Intent intent = new Intent();
+				Intent intent = new Intent(context, CalendarWidgetProvider.class);
 				intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 				context.sendBroadcast(intent);
