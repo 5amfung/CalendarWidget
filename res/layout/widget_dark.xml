@@ -39,30 +39,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-5dp"
         android:orientation="horizontal" >
         
         <TextView
-            style="@style/cell_dark"
-            android:text="@string/sunday"/>
+            android:id="@+id/day_of_week0"
+            style="@style/cell_dark"/>
         <TextView
-            style="@style/cell_dark"
-            android:text="@string/monday"/>
+            android:id="@+id/day_of_week1"
+            style="@style/cell_dark"/>
         <TextView
-            style="@style/cell_dark"
-            android:text="@string/tuesday"/>
+            android:id="@+id/day_of_week2"
+            style="@style/cell_dark"/>
         <TextView
-            style="@style/cell_dark"
-            android:text="@string/wednesday"/>
+            android:id="@+id/day_of_week3"
+            style="@style/cell_dark"/>
         <TextView
-            style="@style/cell_dark"
-            android:text="@string/thursday"/>
+            android:id="@+id/day_of_week4"
+            style="@style/cell_dark"/>
         <TextView
-            style="@style/cell_dark"
-            android:text="@string/friday"/>
+            android:id="@+id/day_of_week5"
+            style="@style/cell_dark"/>
         <TextView
-            style="@style/cell_dark"
-            android:text="@string/saturday"/>
-        
+            android:id="@+id/day_of_week6"
+            style="@style/cell_dark"/>
             
     </LinearLayout>
 
