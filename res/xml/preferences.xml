@@ -8,7 +8,6 @@
             android:entries="@array/themes"
             android:entryValues="@array/theme_values"
             android:key="@string/pref_theme"
-            android:summary="@string/theme_summary"
             android:title="@string/theme" />
         
         <ListPreference
@@ -16,8 +15,31 @@
             android:entries="@array/week_start_day"
             android:entryValues="@array/week_start_day_values"
             android:key="@string/pref_week_start_day"
-            android:summary="@string/week_start_day_summary"
             android:title="@string/week_start_day" />
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/about" >
+        
+        <Preference
+            android:key="@string/pref_version"
+            android:title="@string/version"
+            android:persistent="false"/>
+ 
+        <Preference android:title="@string/license">
+            <intent 
+                android:action="android.intent.action.VIEW"
+                android:data="https://raw.github.com/5amfung/CalendarWidget/master/LICENSE" />
+        </Preference>
+        
+        <Preference
+            android:title="@string/open_source"
+            android:persistent="false">
+            <intent 
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/5amfung/CalendarWidget" />
+        </Preference>
+        
         
     </PreferenceCategory>
 
