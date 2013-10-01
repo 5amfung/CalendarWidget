@@ -21,209 +21,209 @@ import java.util.List;
 
 public class CalendarWidgetProvider extends AppWidgetProvider {
 
-	private static final String ACTION_PREVIOUS_MONTH =
-			"co.sfng.calendarwidget.ACTION_PREVIOUS_MONTH";
-	private static final String ACTION_NEXT_MONTH =
-			"co.sfng.calendarwidget.ACTION_NEXT_MONTH";
-	private static final String ACTION_TODAY =
-			"co.sfng.calendarwidget.ACTION_TODAY";
+    private static final String ACTION_PREVIOUS_MONTH =
+            "co.sfng.calendarwidget.ACTION_PREVIOUS_MONTH";
+    private static final String ACTION_NEXT_MONTH =
+            "co.sfng.calendarwidget.ACTION_NEXT_MONTH";
+    private static final String ACTION_TODAY =
+            "co.sfng.calendarwidget.ACTION_TODAY";
 
-	private static final String PREFERENCE_FILE =
-			"co.sfng.calendarwidget.PREFERENCE_WIDGET_";
-	private static final String PREF_SELECTED_TIME = "selected_time";
-	private static final String PREF_IS_WIDE = "is_wide";
+    private static final String PREFERENCE_FILE =
+            "co.sfng.calendarwidget.PREFERENCE_WIDGET_";
+    private static final String PREF_SELECTED_TIME = "selected_time";
+    private static final String PREF_IS_WIDE = "is_wide";
 
-	private static final int WEEKS = 6;
+    private static final int WEEKS = 6;
 
-	@Override
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
-			int appWidgetId, Bundle newOptions) {
-		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,	newOptions);
+    @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
+            int appWidgetId, Bundle newOptions) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,	newOptions);
 
-		// Obtain widget width and set flag in SharePreferences.
-		Bundle bundle = appWidgetManager.getAppWidgetOptions(appWidgetId);
+        // Obtain widget width and set flag in SharePreferences.
+        Bundle bundle = appWidgetManager.getAppWidgetOptions(appWidgetId);
 
-		if (bundle != null) {
-			int minWidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+        if (bundle != null) {
+            int minWidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
 
-			Resources res = context.getResources();
-			boolean isWide = minWidth > res.getInteger(R.integer.minimum_wide_width);
+            Resources res = context.getResources();
+            boolean isWide = minWidth > res.getInteger(R.integer.minimum_wide_width);
 
-			SharedPreferences pref = context.getSharedPreferences(
-					getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-			pref.edit().putBoolean(PREF_IS_WIDE, isWide).apply();
-		}
+            SharedPreferences pref = context.getSharedPreferences(
+                    getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
+            pref.edit().putBoolean(PREF_IS_WIDE, isWide).apply();
+        }
 
-		render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
-	}
+        render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
+    }
 
-	@Override
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-		super.onUpdate(context, appWidgetManager, appWidgetIds);
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-		int theme = getTheme(context);
-		int weekStartDay = getWeekStartDay(context);
+        int theme = getTheme(context);
+        int weekStartDay = getWeekStartDay(context);
 
-		for (int appWidgetId: appWidgetIds) {
-			render(context, appWidgetId, theme, weekStartDay);
-		}
-	}
+        for (int appWidgetId: appWidgetIds) {
+            render(context, appWidgetId, theme, weekStartDay);
+        }
+    }
 
-	@Override
-	public void onDeleted(Context context, int[] appWidgetIds) {
-		super.onDeleted(context, appWidgetIds);
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
 
-		for (int appWidgetId: appWidgetIds) {
-			SharedPreferences pref = context.getSharedPreferences(
-					getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-			pref.edit().clear().apply();
-		}
-	}
+        for (int appWidgetId: appWidgetIds) {
+            SharedPreferences pref = context.getSharedPreferences(
+                    getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
+            pref.edit().clear().apply();
+        }
+    }
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		super.onReceive(context, intent);
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
 
-		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-		String action = intent.getAction();
-		int appWidgetId = intent.getIntExtra(
-				AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        String action = intent.getAction();
+        int appWidgetId = intent.getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
-		if (ACTION_PREVIOUS_MONTH.equals(action)) {
-			previousMonth(context, appWidgetManager, appWidgetId);
-		} else if (ACTION_NEXT_MONTH.equals(action)) {
-			nextMonth(context, appWidgetManager, appWidgetId);
-		} else if (ACTION_TODAY.equals(action)) {
-			today(context, appWidgetManager, appWidgetId);
-		}
-	}
+        if (ACTION_PREVIOUS_MONTH.equals(action)) {
+            previousMonth(context, appWidgetManager, appWidgetId);
+        } else if (ACTION_NEXT_MONTH.equals(action)) {
+            nextMonth(context, appWidgetManager, appWidgetId);
+        } else if (ACTION_TODAY.equals(action)) {
+            today(context, appWidgetManager, appWidgetId);
+        }
+    }
 
-	private void previousMonth(Context context, AppWidgetManager appWidgetManager,
-			int appWidgetId) {
-		SharedPreferences pref = context.getSharedPreferences(
-				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
-		cal.add(Calendar.MONTH, -1);
-		pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
-		render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
-	}
+    private void previousMonth(Context context, AppWidgetManager appWidgetManager,
+            int appWidgetId) {
+        SharedPreferences pref = context.getSharedPreferences(
+                getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
+        cal.add(Calendar.MONTH, -1);
+        pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
+        render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
+    }
 
-	private void nextMonth(Context context, AppWidgetManager appWidgetManager,
-			int appWidgetId) {
-		SharedPreferences pref = context.getSharedPreferences(
-				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
-		cal.add(Calendar.MONTH, 1);
-		pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
-		render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
-	}
+    private void nextMonth(Context context, AppWidgetManager appWidgetManager,
+            int appWidgetId) {
+        SharedPreferences pref = context.getSharedPreferences(
+                getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
+        cal.add(Calendar.MONTH, 1);
+        pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
+        render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
+    }
 
-	private void today(Context context, AppWidgetManager appWidgetManager,
-			int appWidgetId) {
-		SharedPreferences pref = context.getSharedPreferences(
-				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-		pref.edit().remove(PREF_SELECTED_TIME).apply();
-		render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
-	}
+    private void today(Context context, AppWidgetManager appWidgetManager,
+            int appWidgetId) {
+        SharedPreferences pref = context.getSharedPreferences(
+                getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
+        pref.edit().remove(PREF_SELECTED_TIME).apply();
+        render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
+    }
 
-	private String getPreferenceFileName(int appWidgetId) {
-		return PREFERENCE_FILE + appWidgetId;
-	}
+    private String getPreferenceFileName(int appWidgetId) {
+        return PREFERENCE_FILE + appWidgetId;
+    }
 
-	private int getTheme(Context context) {
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-		return Integer.parseInt(
-				pref.getString(context.getResources().getString(R.string.pref_theme), "0"));
-	}
+    private int getTheme(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.parseInt(
+                pref.getString(context.getResources().getString(R.string.pref_theme), "0"));
+    }
 
-	private int getWeekStartDay(Context context) {
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-		String s = pref.getString(
-				context.getResources().getString(R.string.pref_week_start_day),
-				String.valueOf(Calendar.SUNDAY));
-		return Integer.parseInt(s);
-	}
+    private int getWeekStartDay(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String s = pref.getString(
+                context.getResources().getString(R.string.pref_week_start_day),
+                String.valueOf(Calendar.SUNDAY));
+        return Integer.parseInt(s);
+    }
 
-	private void render(Context context, int appWidgetId, int theme, int weekStartDay) {
-		Calendar cal = Calendar.getInstance();
-		int todayDate = cal.get(Calendar.DATE);
-		int todayMonth = cal.get(Calendar.MONTH);
-		int todayYear = cal.get(Calendar.YEAR);
+    private void render(Context context, int appWidgetId, int theme, int weekStartDay) {
+        Calendar cal = Calendar.getInstance();
+        int todayDate = cal.get(Calendar.DATE);
+        int todayMonth = cal.get(Calendar.MONTH);
+        int todayYear = cal.get(Calendar.YEAR);
 
-		// Obtain last selected time from SharedPreferences.
-		SharedPreferences pref = context.getSharedPreferences(
-				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
-		long selectedTime = pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis());
-		cal.setTimeInMillis(selectedTime);
+        // Obtain last selected time from SharedPreferences.
+        SharedPreferences pref = context.getSharedPreferences(
+                getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
+        long selectedTime = pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis());
+        cal.setTimeInMillis(selectedTime);
 
-		RemoteViews widgetView = new RemoteViews(
-				context.getPackageName(), ResourceHelper.layoutWidget(theme));
-		widgetView.removeAllViews(R.id.calendar);
+        RemoteViews widgetView = new RemoteViews(
+                context.getPackageName(), ResourceHelper.layoutWidget(theme));
+        widgetView.removeAllViews(R.id.calendar);
 
-		// Set month label.
-		String fmt = pref.getBoolean(PREF_IS_WIDE, false) ? "MMMM yyyy" : "MMM yyyy";
-		widgetView.setTextViewText(R.id.month_year_label, DateFormat.format(fmt, cal));
+        // Set month label.
+        String fmt = pref.getBoolean(PREF_IS_WIDE, false) ? "MMMM yyyy" : "MMM yyyy";
+        widgetView.setTextViewText(R.id.month_year_label, DateFormat.format(fmt, cal));
 
-		// Render day of week.
-		renderDayOfWeek(widgetView, weekStartDay);
+        // Render day of week.
+        renderDayOfWeek(widgetView, weekStartDay);
 
-		MonthDisplayHelper calHelper = new MonthDisplayHelper(
-				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), weekStartDay);
+        MonthDisplayHelper calHelper = new MonthDisplayHelper(
+                cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), weekStartDay);
 
-		for (int i = 0; i < WEEKS; i++) {
-			RemoteViews rowView = new RemoteViews(context.getPackageName(), R.layout.row_week);
+        for (int i = 0; i < WEEKS; i++) {
+            RemoteViews rowView = new RemoteViews(context.getPackageName(), R.layout.row_week);
 
-			for (int j = 0; j < 7; j++) {
-				int date = calHelper.getDayAt(i, j);
-				boolean isWithinMonth = calHelper.isWithinCurrentMonth(i, j);
-				boolean isToday = todayDate == date && todayMonth == calHelper.getMonth() &&
-						todayYear == calHelper.getYear() && isWithinMonth;
+            for (int j = 0; j < 7; j++) {
+                int date = calHelper.getDayAt(i, j);
+                boolean isWithinMonth = calHelper.isWithinCurrentMonth(i, j);
+                boolean isToday = todayDate == date && todayMonth == calHelper.getMonth() &&
+                        todayYear == calHelper.getYear() && isWithinMonth;
 
-				int layoutId = ResourceHelper.layoutCellDay(theme);
-				if (isToday) {
-					layoutId = ResourceHelper.layoutCellToday(theme);
-				} else if (isWithinMonth) {
-					layoutId = ResourceHelper.layoutCellInMonth(theme);
-				}
+                int layoutId = ResourceHelper.layoutCellDay(theme);
+                if (isToday) {
+                    layoutId = ResourceHelper.layoutCellToday(theme);
+                } else if (isWithinMonth) {
+                    layoutId = ResourceHelper.layoutCellInMonth(theme);
+                }
 
-				RemoteViews dateView = new RemoteViews(context.getPackageName(), layoutId);
-				dateView.setTextViewText(android.R.id.text1, Integer.toString(date));
-				rowView.addView(R.id.row_week, dateView);
-			}
-			widgetView.addView(R.id.calendar, rowView);
-		}
+                RemoteViews dateView = new RemoteViews(context.getPackageName(), layoutId);
+                dateView.setTextViewText(android.R.id.text1, Integer.toString(date));
+                rowView.addView(R.id.row_week, dateView);
+            }
+            widgetView.addView(R.id.calendar, rowView);
+        }
 
-		// Attach action to buttons.
-		widgetView.setOnClickPendingIntent(R.id.previous_month_button,
-				createPendingIntent(context, appWidgetId, ACTION_PREVIOUS_MONTH));
-		widgetView.setOnClickPendingIntent(R.id.next_month_button,
-				createPendingIntent(context, appWidgetId, ACTION_NEXT_MONTH));
-		widgetView.setOnClickPendingIntent(R.id.month_year_label,
-				createPendingIntent(context, appWidgetId, ACTION_TODAY));
+        // Attach action to buttons.
+        widgetView.setOnClickPendingIntent(R.id.previous_month_button,
+                createPendingIntent(context, appWidgetId, ACTION_PREVIOUS_MONTH));
+        widgetView.setOnClickPendingIntent(R.id.next_month_button,
+                createPendingIntent(context, appWidgetId, ACTION_NEXT_MONTH));
+        widgetView.setOnClickPendingIntent(R.id.month_year_label,
+                createPendingIntent(context, appWidgetId, ACTION_TODAY));
 
-		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-		appWidgetManager.updateAppWidget(appWidgetId, widgetView);
-	}
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        appWidgetManager.updateAppWidget(appWidgetId, widgetView);
+    }
 
-	private void renderDayOfWeek(RemoteViews rv, int weekStartDay) {
-		List<String> list = DayOfWeekHelper.getDayOfWeek(weekStartDay);
-		rv.setTextViewText(R.id.day_of_week0, list.get(0));
-		rv.setTextViewText(R.id.day_of_week1, list.get(1));
-		rv.setTextViewText(R.id.day_of_week2, list.get(2));
-		rv.setTextViewText(R.id.day_of_week3, list.get(3));
-		rv.setTextViewText(R.id.day_of_week4, list.get(4));
-		rv.setTextViewText(R.id.day_of_week5, list.get(5));
-		rv.setTextViewText(R.id.day_of_week6, list.get(6));
-	}
+    private void renderDayOfWeek(RemoteViews rv, int weekStartDay) {
+        List<String> list = DayOfWeekHelper.getDayOfWeek(weekStartDay);
+        rv.setTextViewText(R.id.day_of_week0, list.get(0));
+        rv.setTextViewText(R.id.day_of_week1, list.get(1));
+        rv.setTextViewText(R.id.day_of_week2, list.get(2));
+        rv.setTextViewText(R.id.day_of_week3, list.get(3));
+        rv.setTextViewText(R.id.day_of_week4, list.get(4));
+        rv.setTextViewText(R.id.day_of_week5, list.get(5));
+        rv.setTextViewText(R.id.day_of_week6, list.get(6));
+    }
 
     private PendingIntent createPendingIntent(Context context, int appWidgetId, String action) {
-    	Intent intent = new Intent(context, CalendarWidgetProvider.class);
-    	intent.setAction(action);
-    	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-    	return PendingIntent.getBroadcast(context, appWidgetId, intent,
-    			PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(context, CalendarWidgetProvider.class);
+        intent.setAction(action);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        return PendingIntent.getBroadcast(context, appWidgetId, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
