@@ -1,8 +1,5 @@
 .DS_Store
 
-# Local sandbox
-_sandbox
-
 # built application files
 *.apk
 *.ap_
@@ -25,14 +22,9 @@ local.properties
 .classpath
 .project
 
-# IDEA files
-*.iml
-*.ipr
-*.iws
-
 # Other build files
 project.properties
 ant.properties
 build.xml
 proguard-project.txt
-keystore
+

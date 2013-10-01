@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Calendar Widget</string>
+    
     <string name="previous_month">Previous month</string>
     <string name="next_month">Next month</string>
- 
+
+    <!-- Week days -->
     <string name="monday">M</string>
     <string name="tuesday">T</string>
     <string name="wednesday">W</string>
@@ -11,5 +14,11 @@
     <string name="friday">F</string>
     <string name="saturday">S</string>
     <string name="sunday">S</string>
+    
+    <!-- Used in Settings. -->
+    <string name="theme">Theme</string>
+    <string name="theme_summary">Choose a dark theme or a light theme</string>
+    <string name="week_start_day">Week starts on</string>
+    <string name="week_start_day_summary">Sunday or Monday</string>
     
 </resources>

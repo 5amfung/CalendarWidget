@@ -1,7 +1,5 @@
 package co.sfng.calendarwidget;
 
-import java.util.Calendar;
-
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -12,8 +10,13 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.util.MonthDisplayHelper;
 import android.widget.RemoteViews;
+
+import java.util.Calendar;
+import java.util.List;
 
 
 public class CalendarWidgetProvider extends AppWidgetProvider {
@@ -52,15 +55,18 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 			pref.edit().putBoolean(PREF_IS_WIDE, isWide).apply();
 		}
 
-		render(context, appWidgetId);
+		render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
 	}
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 
+		int theme = getTheme(context);
+		int weekStartDay = getWeekStartDay(context);
+
 		for (int appWidgetId: appWidgetIds) {
-			render(context, appWidgetId);
+			render(context, appWidgetId, theme, weekStartDay);
 		}
 	}
 
@@ -101,7 +107,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
 		cal.add(Calendar.MONTH, -1);
 		pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
-		render(context, appWidgetId);
+		render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
 	}
 
 	private void nextMonth(Context context, AppWidgetManager appWidgetManager,
@@ -112,7 +118,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
 		cal.add(Calendar.MONTH, 1);
 		pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
-		render(context, appWidgetId);
+		render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
 	}
 
 	private void today(Context context, AppWidgetManager appWidgetManager,
@@ -120,16 +126,31 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		SharedPreferences pref = context.getSharedPreferences(
 				getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
 		pref.edit().remove(PREF_SELECTED_TIME).apply();
-		render(context, appWidgetId);
+		render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
 	}
 
 	private String getPreferenceFileName(int appWidgetId) {
 		return PREFERENCE_FILE + appWidgetId;
 	}
 
-	private void render(Context context, int appWidgetId) {
+	private int getTheme(Context context) {
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		return Integer.parseInt(
+				pref.getString(context.getResources().getString(R.string.pref_theme), "0"));
+	}
+
+	private int getWeekStartDay(Context context) {
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		String s = pref.getString(
+				context.getResources().getString(R.string.pref_week_start_day),
+				String.valueOf(Calendar.SUNDAY));
+		return Integer.parseInt(s);
+	}
+
+	private void render(Context context, int appWidgetId, int theme, int weekStartDay) {
 		Calendar cal = Calendar.getInstance();
-		int today = cal.get(Calendar.DAY_OF_YEAR);
+		int todayDate = cal.get(Calendar.DATE);
+		int todayMonth = cal.get(Calendar.MONTH);
 		int todayYear = cal.get(Calendar.YEAR);
 
 		// Obtain last selected time from SharedPreferences.
@@ -138,42 +159,39 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 		long selectedTime = pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis());
 		cal.setTimeInMillis(selectedTime);
 
-		RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget);
+		RemoteViews widgetView = new RemoteViews(
+				context.getPackageName(), ResourceHelper.layoutWidget(theme));
 		widgetView.removeAllViews(R.id.calendar);
 
-		if (pref.getBoolean(PREF_IS_WIDE, false)) {
-			widgetView.setTextViewText(R.id.month_year_label, DateFormat.format("MMMM yyyy", cal));
-		} else {
-			widgetView.setTextViewText(R.id.month_year_label, DateFormat.format("MMM yyyy", cal));
-		}
+		// Set month label.
+		String fmt = pref.getBoolean(PREF_IS_WIDE, false) ? "MMMM yyyy" : "MMM yyyy";
+		widgetView.setTextViewText(R.id.month_year_label, DateFormat.format(fmt, cal));
 
-		// Keep track of what the selected month is.
-		int selectedMonth = cal.get(Calendar.MONTH);
+		// Render day of week.
+		renderDayOfWeek(widgetView, weekStartDay);
 
-		// Set date to the first Sunday or Sunday of the first week of previous month.
-		cal.set(Calendar.DATE, 1);
-		cal.add(Calendar.DATE, 1 - cal.get(Calendar.DAY_OF_WEEK));
+		MonthDisplayHelper calHelper = new MonthDisplayHelper(
+				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), weekStartDay);
 
 		for (int i = 0; i < WEEKS; i++) {
 			RemoteViews rowView = new RemoteViews(context.getPackageName(), R.layout.row_week);
 
-			for (int y = 0; y < 7; y++) {
-				boolean isToday = cal.get(Calendar.DAY_OF_YEAR) == today &&
-							cal.get(Calendar.YEAR) == todayYear;
-				boolean inSelectedMonth = cal.get(Calendar.MONTH) == selectedMonth;
+			for (int j = 0; j < 7; j++) {
+				int date = calHelper.getDayAt(i, j);
+				boolean isWithinMonth = calHelper.isWithinCurrentMonth(i, j);
+				boolean isToday = todayDate == date && todayMonth == calHelper.getMonth() &&
+						todayYear == calHelper.getYear() && isWithinMonth;
 
-				int layoutId = R.layout.cell_day;
+				int layoutId = ResourceHelper.layoutCellDay(theme);
 				if (isToday) {
-					layoutId = R.layout.cell_today;
-				} else if (inSelectedMonth) {
-					layoutId = R.layout.cell_current_month_day;
+					layoutId = ResourceHelper.layoutCellToday(theme);
+				} else if (isWithinMonth) {
+					layoutId = ResourceHelper.layoutCellInMonth(theme);
 				}
 
 				RemoteViews dateView = new RemoteViews(context.getPackageName(), layoutId);
-				dateView.setTextViewText(
-						android.R.id.text1, Integer.toString(cal.get(Calendar.DATE)));
+				dateView.setTextViewText(android.R.id.text1, Integer.toString(date));
 				rowView.addView(R.id.row_week, dateView);
-				cal.add(Calendar.DATE, 1);
 			}
 			widgetView.addView(R.id.calendar, rowView);
 		}
@@ -188,6 +206,17 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 		appWidgetManager.updateAppWidget(appWidgetId, widgetView);
+	}
+
+	private void renderDayOfWeek(RemoteViews rv, int weekStartDay) {
+		List<String> list = DayOfWeekHelper.getDayOfWeek(weekStartDay);
+		rv.setTextViewText(R.id.day_of_week0, list.get(0));
+		rv.setTextViewText(R.id.day_of_week1, list.get(1));
+		rv.setTextViewText(R.id.day_of_week2, list.get(2));
+		rv.setTextViewText(R.id.day_of_week3, list.get(3));
+		rv.setTextViewText(R.id.day_of_week4, list.get(4));
+		rv.setTextViewText(R.id.day_of_week5, list.get(5));
+		rv.setTextViewText(R.id.day_of_week6, list.get(6));
 	}
 
     private PendingIntent createPendingIntent(Context context, int appWidgetId, String action) {
