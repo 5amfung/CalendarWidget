@@ -159,8 +159,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         long selectedTime = pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis());
         cal.setTimeInMillis(selectedTime);
 
-        RemoteViews widgetView = new RemoteViews(
-                context.getPackageName(), ResourceHelper.layoutWidget(theme));
+        String pkgName = context.getPackageName();
+        RemoteViews widgetView = new RemoteViews(pkgName, ResourceHelper.layoutWidget(theme));
         widgetView.removeAllViews(R.id.calendar);
 
         // Set month label.
@@ -173,8 +173,9 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         MonthDisplayHelper calHelper = new MonthDisplayHelper(
                 cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), weekStartDay);
 
+
         for (int i = 0; i < WEEKS; i++) {
-            RemoteViews rowView = new RemoteViews(context.getPackageName(), R.layout.row_week);
+            RemoteViews rowView = new RemoteViews(pkgName, R.layout.row_week);
 
             for (int j = 0; j < 7; j++) {
                 int date = calHelper.getDayAt(i, j);
@@ -189,7 +190,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
                     layoutId = ResourceHelper.layoutCellInMonth(theme);
                 }
 
-                RemoteViews dateView = new RemoteViews(context.getPackageName(), layoutId);
+                RemoteViews dateView = new RemoteViews(pkgName, layoutId);
                 dateView.setTextViewText(android.R.id.text1, Integer.toString(date));
                 rowView.addView(R.id.row_week, dateView);
             }
