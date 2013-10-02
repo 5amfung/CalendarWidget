@@ -6,14 +6,16 @@
     <string name="previous_month">Previous month</string>
     <string name="next_month">Next month</string>
 
-    <string name="about">About</string>
-    <string name="version">Version</string>
-    <string name="license">License</string>
-    <string name="open_source">Open source</string>
-    
     <!-- Used in Settings. -->
     <string name="widget">Widget</string>
     <string name="theme">Theme</string>
     <string name="week_start_day">Week starts on</string>
+
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    <string name="license">License</string>
+    <string name="license_summary">MIT License</string>
+    <string name="open_source">Open source</string>
+    <string name="open_source_summary">Source code available at GitHub</string>
     
 </resources>

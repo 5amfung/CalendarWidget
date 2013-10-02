@@ -26,7 +26,10 @@
             android:title="@string/version"
             android:persistent="false"/>
  
-        <Preference android:title="@string/license">
+        <Preference
+            android:title="@string/license"
+            android:summary="@string/license_summary"
+            android:persistent="false">
             <intent 
                 android:action="android.intent.action.VIEW"
                 android:data="https://raw.github.com/5amfung/CalendarWidget/master/LICENSE" />
@@ -34,6 +37,7 @@
         
         <Preference
             android:title="@string/open_source"
+            android:summary="@string/open_source_summary"
             android:persistent="false">
             <intent 
                 android:action="android.intent.action.VIEW"
