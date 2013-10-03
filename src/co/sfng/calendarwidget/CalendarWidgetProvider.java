@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
-import android.util.MonthDisplayHelper;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -184,19 +183,20 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         // Render day of week.
         renderDayOfWeek(widgetView, weekStartDay);
 
-        MonthDisplayHelper calHelper = new MonthDisplayHelper(
-                cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), weekStartDay);
+        int selectedMonth = cal.get(Calendar.MONTH);
         cal.set(Calendar.DATE, 1);
-        cal.add(Calendar.DATE, -1 * calHelper.getOffset());
+        cal.add(Calendar.DATE, weekStartDay - cal.get(Calendar.DAY_OF_WEEK));
 
         for (int i = 0; i < WEEKS; i++) {
             RemoteViews rowView = new RemoteViews(pkgName, R.layout.row_week);
 
             for (int j = 0; j < 7; j++) {
-                int date = calHelper.getDayAt(i, j);
-                boolean isWithinMonth = calHelper.isWithinCurrentMonth(i, j);
-                boolean isToday = todayDate == date && todayMonth == calHelper.getMonth() &&
-                        todayYear == calHelper.getYear() && isWithinMonth;
+                int date = cal.get(Calendar.DATE);
+                int month = cal.get(Calendar.MONTH);
+                int year = cal.get(Calendar.YEAR);
+
+                boolean isWithinMonth = month == selectedMonth;
+                boolean isToday = date == todayDate && month == todayMonth && year == todayYear;
 
                 int layoutId = ResourceHelper.layoutCellDay(theme);
                 if (isToday) {
@@ -209,9 +209,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
                 dateView.setTextViewText(android.R.id.text1, Integer.toString(date));
                 dateView.setOnClickPendingIntent(
                         android.R.id.text1,
-                        createDateClickPendingIntent(
-                                context, appWidgetId, cal.get(Calendar.YEAR),
-                                cal.get(Calendar.MONTH), cal.get(Calendar.DATE)));
+                        createDateClickPendingIntent(context, appWidgetId, year, month, date));
 
                 rowView.addView(R.id.row_week, dateView);
                 cal.add(Calendar.DATE, 1);
@@ -252,13 +250,13 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
     }
 
     private PendingIntent createDateClickPendingIntent(Context context, int appWidgetId, int year,
-            int month, int day) {
+            int month, int date) {
         Intent intent = new Intent(context, CalendarWidgetProvider.class);
         intent.setAction(ACTION_DATE);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.putExtra(EXTRA_YEAR, year);
         intent.putExtra(EXTRA_MONTH, month);
-        intent.putExtra(EXTRA_DAY, day);
+        intent.putExtra(EXTRA_DAY, date);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         return PendingIntent.getBroadcast(context, appWidgetId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
