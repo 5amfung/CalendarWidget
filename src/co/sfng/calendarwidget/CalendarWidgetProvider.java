@@ -14,9 +14,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.text.format.DateFormat;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.List;
@@ -38,6 +38,10 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
             "co.sfng.calendarwidget.PREFERENCE_WIDGET_";
     private static final String PREF_SELECTED_TIME = "selected_time";
     private static final String PREF_IS_WIDE = "is_wide";
+
+    // Constants for Date click actions.
+    private static final int VIEW_CALENDAR = 1;
+    private static final int CREATE_EVENT = 2;
 
     private static final int WEEKS = 6;
 
@@ -108,11 +112,11 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         } else if (ACTION_DATE_CLICK.equals(action)) {
             int onDateClickAction = getOnDateClickAction(context);
 
-            if (onDateClickAction == 1) {
+            if (onDateClickAction == VIEW_CALENDAR) {
+                // View calendar
                 Calendar cal = Calendar.getInstance();
                 cal.set(intent.getIntExtra(EXTRA_YEAR, -1), intent.getIntExtra(EXTRA_MONTH, -1),
                         intent.getIntExtra(EXTRA_DATE, -1));
-
                 Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
                 builder.appendPath("time");
                 ContentUris.appendId(builder, cal.getTimeInMillis());
@@ -120,14 +124,16 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
                 calIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(calIntent);
 
-            } else if (onDateClickAction == 2) {
-                int yr = intent.getIntExtra(EXTRA_YEAR, -1);
-                int mon = intent.getIntExtra(EXTRA_MONTH, -1);
-                int day = intent.getIntExtra(EXTRA_DATE, -1);
-
-                CharSequence s = "yr=" + yr + " mon=" + mon + " day=" + day;
-                Toast toast = Toast.makeText(context, s, Toast.LENGTH_SHORT);
-                toast.show();
+            } else if (onDateClickAction == CREATE_EVENT) {
+                // Create new event.
+                Calendar cal = Calendar.getInstance();
+                cal.set(intent.getIntExtra(EXTRA_YEAR, -1), intent.getIntExtra(EXTRA_MONTH, -1),
+                        intent.getIntExtra(EXTRA_DATE, -1));
+                Intent calIntent = new Intent(Intent.ACTION_INSERT, Events.CONTENT_URI);
+                calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, cal.getTimeInMillis());
+                calIntent.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+                calIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(calIntent);
             }
         }
     }
@@ -185,7 +191,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
     private int getOnDateClickAction(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         String s = pref.getString(
-                context.getResources().getString(R.string.pref_on_day_click_action), "0");
+                context.getResources().getString(R.string.pref_on_day_click), "0");
         return Integer.parseInt(s);
 
     }
@@ -290,22 +296,5 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         return PendingIntent.getBroadcast(
                 context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
-
-    /*
-    private PendingIntent createNewEventPendingIntent(Context context, int appWidgetId, int year,
-            int month, int day) {
-        Calendar startTime = Calendar.getInstance();
-        startTime.set(year, month, day);
-
-        Intent intent = new Intent(Intent.ACTION_INSERT);
-        intent.setData(Events.CONTENT_URI);
-        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime.getTimeInMillis());
-        intent.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
-
-        Log.i("blah", "" + Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-
-        return PendingIntent.getActivity(
-                context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }*/
 
 }

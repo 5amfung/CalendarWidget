@@ -35,7 +35,7 @@ public class SettingsFragment extends PreferenceFragment
         mWeekStartDayReverseLookup = createReverseLookup(
                 mResources, R.array.week_start_day, R.array.week_start_day_values);
         mOnDayClickActionReverseLookup = createReverseLookup(
-                mResources, R.array.on_day_click_actions, R.array.on_day_click_action_values);
+                mResources, R.array.on_day_click, R.array.on_day_click_values);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SettingsFragment extends PreferenceFragment
         setSummary(prefMgr, sharedPref, mWeekStartDayReverseLookup,
                 res.getString(R.string.pref_week_start_day));
         setSummary(prefMgr, sharedPref, mOnDayClickActionReverseLookup,
-                res.getString(R.string.pref_on_day_click_action));
+                res.getString(R.string.pref_on_day_click));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SettingsFragment extends PreferenceFragment
             setSummary(prefMgr, sharedPref, mThemeReverseLookup, key);
         } else if (key.equals(mResources.getString(R.string.pref_week_start_day))) {
             setSummary(prefMgr, sharedPref, mWeekStartDayReverseLookup, key);
-        } else if (key.equals(mResources.getString(R.string.pref_on_day_click_action))) {
+        } else if (key.equals(mResources.getString(R.string.pref_on_day_click))) {
             setSummary(prefMgr, sharedPref, mOnDayClickActionReverseLookup, key);
         }
     }

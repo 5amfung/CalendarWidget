@@ -19,10 +19,10 @@
 
         <ListPreference
             android:defaultValue="0"
-            android:entries="@array/on_day_click_actions"
-            android:entryValues="@array/on_day_click_action_values"
-            android:key="@string/pref_on_day_click_action"
-            android:title="@string/on_day_click_action" />
+            android:entries="@array/on_day_click"
+            android:entryValues="@array/on_day_click_values"
+            android:key="@string/pref_on_day_click"
+            android:title="@string/on_day_click" />
         
     </PreferenceCategory>
     
