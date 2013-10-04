@@ -23,6 +23,7 @@ public class SettingsFragment extends PreferenceFragment
     private String mVersionName;
     private HashMap<String, String> mThemeReverseLookup;
     private HashMap<String, String> mWeekStartDayReverseLookup;
+    private HashMap<String, String> mOnDayClickActionReverseLookup;
 
     @Override
     public void onAttach(Activity activity) {
@@ -33,6 +34,8 @@ public class SettingsFragment extends PreferenceFragment
         mThemeReverseLookup = createReverseLookup(mResources, R.array.themes, R.array.theme_values);
         mWeekStartDayReverseLookup = createReverseLookup(
                 mResources, R.array.week_start_day, R.array.week_start_day_values);
+        mOnDayClickActionReverseLookup = createReverseLookup(
+                mResources, R.array.on_day_click_actions, R.array.on_day_click_action_values);
     }
 
     @Override
@@ -51,6 +54,8 @@ public class SettingsFragment extends PreferenceFragment
         setSummary(prefMgr, sharedPref, mThemeReverseLookup, res.getString(R.string.pref_theme));
         setSummary(prefMgr, sharedPref, mWeekStartDayReverseLookup,
                 res.getString(R.string.pref_week_start_day));
+        setSummary(prefMgr, sharedPref, mOnDayClickActionReverseLookup,
+                res.getString(R.string.pref_on_day_click_action));
     }
 
     @Override
@@ -65,6 +70,8 @@ public class SettingsFragment extends PreferenceFragment
             setSummary(prefMgr, sharedPref, mThemeReverseLookup, key);
         } else if (key.equals(mResources.getString(R.string.pref_week_start_day))) {
             setSummary(prefMgr, sharedPref, mWeekStartDayReverseLookup, key);
+        } else if (key.equals(mResources.getString(R.string.pref_on_day_click_action))) {
+            setSummary(prefMgr, sharedPref, mOnDayClickActionReverseLookup, key);
         }
     }
 

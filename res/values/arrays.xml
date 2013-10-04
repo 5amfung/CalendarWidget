@@ -23,4 +23,16 @@
         <item name="monday">2</item>
     </string-array>
     
+    <string-array name="on_day_click_actions">
+        <item name="no_action">Do nothing</item>
+        <item name="view">View day</item>
+        <item name="create">Create a new event</item>
+    </string-array>
+    
+    <string-array name="on_day_click_action_values">
+        <item name="no_action">0</item>
+        <item name="view">1</item>
+        <item name="create">2</item>
+    </string-array>
+    
 </resources>

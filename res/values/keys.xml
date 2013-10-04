@@ -4,5 +4,6 @@
     <string name="pref_version">version</string>
     <string name="pref_theme">theme</string>
     <string name="pref_week_start_day">week_start_day</string>
+    <string name="pref_on_day_click_action">on_day_click_action</string>
     
 </resources>

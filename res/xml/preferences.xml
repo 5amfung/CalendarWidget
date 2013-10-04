@@ -9,13 +9,20 @@
             android:entryValues="@array/theme_values"
             android:key="@string/pref_theme"
             android:title="@string/theme" />
-        
+
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/week_start_day"
             android:entryValues="@array/week_start_day_values"
             android:key="@string/pref_week_start_day"
             android:title="@string/week_start_day" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/on_day_click_actions"
+            android:entryValues="@array/on_day_click_action_values"
+            android:key="@string/pref_on_day_click_action"
+            android:title="@string/on_day_click_action" />
         
     </PreferenceCategory>
     

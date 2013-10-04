@@ -10,6 +10,7 @@
     <string name="widget">Widget</string>
     <string name="theme">Theme</string>
     <string name="week_start_day">Week starts on</string>
+    <string name="on_day_click_action">On day click action</string>
 
     <string name="about">About</string>
     <string name="version">Version</string>
