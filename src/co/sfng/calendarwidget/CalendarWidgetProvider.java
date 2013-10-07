@@ -4,15 +4,18 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.text.format.DateFormat;
-import android.util.MonthDisplayHelper;
 import android.widget.RemoteViews;
 
 import java.util.Calendar;
@@ -23,15 +26,22 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
     private static final String ACTION_PREVIOUS_MONTH =
             "co.sfng.calendarwidget.ACTION_PREVIOUS_MONTH";
-    private static final String ACTION_NEXT_MONTH =
-            "co.sfng.calendarwidget.ACTION_NEXT_MONTH";
-    private static final String ACTION_TODAY =
-            "co.sfng.calendarwidget.ACTION_TODAY";
+    private static final String ACTION_NEXT_MONTH = "co.sfng.calendarwidget.ACTION_NEXT_MONTH";
+    private static final String ACTION_TODAY = "co.sfng.calendarwidget.ACTION_TODAY";
+    private static final String ACTION_DATE_CLICK = "co.sfng.calendarwidget.ACTION_DATE_CLICK";
+
+    private static final String EXTRA_YEAR = "co.sfng.calendarwidget.EXTRA_YEAR";
+    private static final String EXTRA_MONTH = "co.sfng.calendarwidget.EXTRA_MONTH";
+    private static final String EXTRA_DATE = "co.sfng.calendarwidget.EXTRA_DATE";
 
     private static final String PREFERENCE_FILE =
             "co.sfng.calendarwidget.PREFERENCE_WIDGET_";
     private static final String PREF_SELECTED_TIME = "selected_time";
     private static final String PREF_IS_WIDE = "is_wide";
+
+    // Constants for Date click actions.
+    private static final int VIEW_CALENDAR = 1;
+    private static final int CREATE_EVENT = 2;
 
     private static final int WEEKS = 6;
 
@@ -92,10 +102,39 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
         if (ACTION_PREVIOUS_MONTH.equals(action)) {
             previousMonth(context, appWidgetManager, appWidgetId);
+
         } else if (ACTION_NEXT_MONTH.equals(action)) {
             nextMonth(context, appWidgetManager, appWidgetId);
+
         } else if (ACTION_TODAY.equals(action)) {
             today(context, appWidgetManager, appWidgetId);
+
+        } else if (ACTION_DATE_CLICK.equals(action)) {
+            int onDateClickAction = getOnDateClickAction(context);
+
+            if (onDateClickAction == VIEW_CALENDAR) {
+                // View calendar
+                Calendar cal = Calendar.getInstance();
+                cal.set(intent.getIntExtra(EXTRA_YEAR, -1), intent.getIntExtra(EXTRA_MONTH, -1),
+                        intent.getIntExtra(EXTRA_DATE, -1));
+                Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+                builder.appendPath("time");
+                ContentUris.appendId(builder, cal.getTimeInMillis());
+                Intent calIntent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+                calIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(calIntent);
+
+            } else if (onDateClickAction == CREATE_EVENT) {
+                // Create new event.
+                Calendar cal = Calendar.getInstance();
+                cal.set(intent.getIntExtra(EXTRA_YEAR, -1), intent.getIntExtra(EXTRA_MONTH, -1),
+                        intent.getIntExtra(EXTRA_DATE, -1));
+                Intent calIntent = new Intent(Intent.ACTION_INSERT, Events.CONTENT_URI);
+                calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, cal.getTimeInMillis());
+                calIntent.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+                calIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(calIntent);
+            }
         }
     }
 
@@ -105,6 +144,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
                 getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
+        cal.set(Calendar.DATE, 1);
         cal.add(Calendar.MONTH, -1);
         pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
         render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
@@ -116,6 +156,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
                 getPreferenceFileName(appWidgetId), Context.MODE_PRIVATE);
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis()));
+        cal.set(Calendar.DATE, 1);
         cal.add(Calendar.MONTH, 1);
         pref.edit().putLong(PREF_SELECTED_TIME, cal.getTimeInMillis()).apply();
         render(context, appWidgetId, getTheme(context), getWeekStartDay(context));
@@ -147,6 +188,14 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         return Integer.parseInt(s);
     }
 
+    private int getOnDateClickAction(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String s = pref.getString(
+                context.getResources().getString(R.string.pref_on_day_click), "0");
+        return Integer.parseInt(s);
+
+    }
+
     private void render(Context context, int appWidgetId, int theme, int weekStartDay) {
         Calendar cal = Calendar.getInstance();
         int todayDate = cal.get(Calendar.DATE);
@@ -159,8 +208,8 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         long selectedTime = pref.getLong(PREF_SELECTED_TIME, cal.getTimeInMillis());
         cal.setTimeInMillis(selectedTime);
 
-        RemoteViews widgetView = new RemoteViews(
-                context.getPackageName(), ResourceHelper.layoutWidget(theme));
+        String pkgName = context.getPackageName();
+        RemoteViews widgetView = new RemoteViews(pkgName, ResourceHelper.layoutWidget(theme));
         widgetView.removeAllViews(R.id.calendar);
 
         // Set month label.
@@ -170,17 +219,20 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         // Render day of week.
         renderDayOfWeek(widgetView, weekStartDay);
 
-        MonthDisplayHelper calHelper = new MonthDisplayHelper(
-                cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), weekStartDay);
+        int selectedMonth = cal.get(Calendar.MONTH);
+        cal.set(Calendar.DATE, 1);
+        cal.add(Calendar.DATE, weekStartDay - cal.get(Calendar.DAY_OF_WEEK));
 
         for (int i = 0; i < WEEKS; i++) {
-            RemoteViews rowView = new RemoteViews(context.getPackageName(), R.layout.row_week);
+            RemoteViews rowView = new RemoteViews(pkgName, R.layout.row_week);
 
             for (int j = 0; j < 7; j++) {
-                int date = calHelper.getDayAt(i, j);
-                boolean isWithinMonth = calHelper.isWithinCurrentMonth(i, j);
-                boolean isToday = todayDate == date && todayMonth == calHelper.getMonth() &&
-                        todayYear == calHelper.getYear() && isWithinMonth;
+                int date = cal.get(Calendar.DATE);
+                int month = cal.get(Calendar.MONTH);
+                int year = cal.get(Calendar.YEAR);
+
+                boolean isWithinMonth = month == selectedMonth;
+                boolean isToday = date == todayDate && month == todayMonth && year == todayYear;
 
                 int layoutId = ResourceHelper.layoutCellDay(theme);
                 if (isToday) {
@@ -189,9 +241,13 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
                     layoutId = ResourceHelper.layoutCellInMonth(theme);
                 }
 
-                RemoteViews dateView = new RemoteViews(context.getPackageName(), layoutId);
+                RemoteViews dateView = new RemoteViews(pkgName, layoutId);
                 dateView.setTextViewText(android.R.id.text1, Integer.toString(date));
+                dateView.setOnClickPendingIntent(
+                            android.R.id.text1,
+                            createDateClickPendingIntent(context, appWidgetId, year, month, date));
                 rowView.addView(R.id.row_week, dateView);
+                cal.add(Calendar.DATE, 1);
             }
             widgetView.addView(R.id.calendar, rowView);
         }
@@ -223,7 +279,22 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(context, CalendarWidgetProvider.class);
         intent.setAction(action);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         return PendingIntent.getBroadcast(context, appWidgetId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
+
+    private PendingIntent createDateClickPendingIntent(Context context, int appWidgetId, int year,
+            int month, int date) {
+        Intent intent = new Intent(context, CalendarWidgetProvider.class);
+        intent.setAction(ACTION_DATE_CLICK);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.putExtra(EXTRA_YEAR, year);
+        intent.putExtra(EXTRA_MONTH, month);
+        intent.putExtra(EXTRA_DATE, date);
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+        return PendingIntent.getBroadcast(
+                context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
 }

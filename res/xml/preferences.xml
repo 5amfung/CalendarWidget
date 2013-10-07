@@ -9,13 +9,20 @@
             android:entryValues="@array/theme_values"
             android:key="@string/pref_theme"
             android:title="@string/theme" />
-        
+
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/week_start_day"
             android:entryValues="@array/week_start_day_values"
             android:key="@string/pref_week_start_day"
             android:title="@string/week_start_day" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/on_day_click"
+            android:entryValues="@array/on_day_click_values"
+            android:key="@string/pref_on_day_click"
+            android:title="@string/on_day_click" />
         
     </PreferenceCategory>
     
@@ -26,7 +33,10 @@
             android:title="@string/version"
             android:persistent="false"/>
  
-        <Preference android:title="@string/license">
+        <Preference
+            android:title="@string/license"
+            android:summary="@string/license_summary"
+            android:persistent="false">
             <intent 
                 android:action="android.intent.action.VIEW"
                 android:data="https://raw.github.com/5amfung/CalendarWidget/master/LICENSE" />
@@ -34,6 +44,7 @@
         
         <Preference
             android:title="@string/open_source"
+            android:summary="@string/open_source_summary"
             android:persistent="false">
             <intent 
                 android:action="android.intent.action.VIEW"

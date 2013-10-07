@@ -24,25 +24,35 @@ public class AppWidgetConfigureActivity extends Activity {
         findViewById(R.id.ok_button).setOnClickListener(mOnClickListener);
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        refreshWidgets();
+    }
+
     private OnClickListener mOnClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            // Obtain all app widget IDs.
-            Context context = getApplicationContext();
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            ComponentName cn = new ComponentName(context, CalendarWidgetProvider.class);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cn);
-
-            if (appWidgetIds != null && appWidgetIds.length != 0) {
-                // Broadcast update action to all running app widgets.
-                Intent intent = new Intent(context, CalendarWidgetProvider.class);
-                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-                context.sendBroadcast(intent);
-            }
-
+            refreshWidgets();
             finish();
         }
     };
+
+    private void refreshWidgets() {
+        // Obtain all app widget IDs.
+        Context context = getApplicationContext();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        ComponentName cn = new ComponentName(context, CalendarWidgetProvider.class);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cn);
+
+        if (appWidgetIds != null && appWidgetIds.length != 0) {
+            // Broadcast update action to all running app widgets.
+            Intent intent = new Intent(context, CalendarWidgetProvider.class);
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+            context.sendBroadcast(intent);
+        }
+    }
 
 }
