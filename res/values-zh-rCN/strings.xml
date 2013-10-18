@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Calendar Widget</string>
+    
+    <string name="previous_month">上个月</string>
+    <string name="next_month">下个月</string>
+
+    <!-- Used in Settings. -->
+    <string name="widget">部件</string>
+    <string name="theme">主题</string>
+    <string name="week_start_day">一周的开始</string>
+    <string name="on_day_click">点击</string>
+
+    <string name="about">关于</string>
+    <string name="version">版本</string>
+    <string name="license">许可</string>
+    <string name="license_summary">MIT License</string>
+    <string name="open_source">开放源码</string>
+    <string name="open_source_summary">源代码可在 GitHub</string>
+    
+</resources>

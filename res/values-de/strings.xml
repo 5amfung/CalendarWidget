@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Calendar Widget</string>
+    
+    <string name="previous_month">Vormonat</string>
+    <string name="next_month">Nächsten Monat</string>
+
+    <!-- Used in Settings. -->
+    <string name="widget">Widget</string>
+    <string name="theme">Theme</string>
+    <string name="week_start_day">Die Woche beginnt am</string>
+    <string name="on_day_click">Am tag klicken</string>
+
+    <string name="about">über</string>
+    <string name="version">Version</string>
+    <string name="license">Lizenz</string>
+    <string name="license_summary">MIT License</string>
+    <string name="open_source">Open source</string>
+    <string name="open_source_summary">Quellcode verfügbar GitHub</string>
+        
+</resources>

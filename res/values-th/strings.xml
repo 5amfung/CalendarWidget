@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Calendar Widget</string>
+    
+    <string name="previous_month">เดือนก่อน</string>
+    <string name="next_month">เดือนถัดไป</string>
+
+    <!-- Used in Settings. -->
+    <string name="widget">วิดเจ็ต</string>
+    <string name="theme">กระทู้</string>
+    <string name="week_start_day">สัปดาห์เริ่มต้นเมื่อ</string>
+    <string name="on_day_click">เมื่อคลิกวัน</string>
+
+    <string name="about">เกี่ยวกับ</string>
+    <string name="version">เวอร์ชั่น</string>
+    <string name="license">การอนุญาต</string>
+    <string name="license_summary">MIT License</string>
+    <string name="open_source">Open source</string>
+    <string name="open_source_summary">รหัสที่มาสามารถดูได้ที่ GitHub</string>
+    
+</resources>
