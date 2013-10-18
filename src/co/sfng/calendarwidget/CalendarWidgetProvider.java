@@ -176,22 +176,19 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
 
     private int getTheme(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        return Integer.parseInt(
-                pref.getString(context.getResources().getString(R.string.pref_theme), "0"));
+        return Integer.parseInt(pref.getString(SettingsFragment.PREF_THEME, "0"));
     }
 
     private int getWeekStartDay(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        String s = pref.getString(
-                context.getResources().getString(R.string.pref_week_start_day),
+        String s = pref.getString(SettingsFragment.PREF_WEEK_START_DAY,
                 String.valueOf(Calendar.SUNDAY));
         return Integer.parseInt(s);
     }
 
     private int getOnDateClickAction(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        String s = pref.getString(
-                context.getResources().getString(R.string.pref_on_day_click), "0");
+        String s = pref.getString(SettingsFragment.PREF_ON_DAY_CLICK, "0");
         return Integer.parseInt(s);
 
     }
