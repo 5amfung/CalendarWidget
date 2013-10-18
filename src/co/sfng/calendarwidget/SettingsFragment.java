@@ -19,11 +19,17 @@ public class SettingsFragment extends PreferenceFragment
         implements OnSharedPreferenceChangeListener {
 
     private static final String TAG = SettingsFragment.class.toString();
+
     private Resources mResources;
     private String mVersionName;
     private HashMap<String, String> mThemeReverseLookup;
     private HashMap<String, String> mWeekStartDayReverseLookup;
     private HashMap<String, String> mOnDayClickActionReverseLookup;
+
+    public static final String PREF_VERSION = "version";
+    public static final String PREF_THEME = "theme";
+    public static final String PREF_WEEK_START_DAY = "week_start_day";
+    public static final String PREF_ON_DAY_CLICK = "on_day_click";
 
     @Override
     public void onAttach(Activity activity) {
@@ -49,13 +55,10 @@ public class SettingsFragment extends PreferenceFragment
 
         // Read preferences and set as summary.
         PreferenceManager prefMgr = getPreferenceManager();
-        Resources res = getResources();
-        setSummary(prefMgr, res.getString(R.string.pref_version), mVersionName);
-        setSummary(prefMgr, sharedPref, mThemeReverseLookup, res.getString(R.string.pref_theme));
-        setSummary(prefMgr, sharedPref, mWeekStartDayReverseLookup,
-                res.getString(R.string.pref_week_start_day));
-        setSummary(prefMgr, sharedPref, mOnDayClickActionReverseLookup,
-                res.getString(R.string.pref_on_day_click));
+        setSummary(prefMgr, PREF_VERSION, mVersionName);
+        setSummary(prefMgr, sharedPref, mThemeReverseLookup, PREF_THEME);
+        setSummary(prefMgr, sharedPref, mWeekStartDayReverseLookup, PREF_WEEK_START_DAY);
+        setSummary(prefMgr, sharedPref, mOnDayClickActionReverseLookup, PREF_ON_DAY_CLICK);
     }
 
     @Override
@@ -66,11 +69,11 @@ public class SettingsFragment extends PreferenceFragment
         String value = sharedPref.getString(key, null);
         assert(value != null);
 
-        if (key.equals(mResources.getString(R.string.pref_theme))) {
+        if (key.equals(PREF_THEME)) {
             setSummary(prefMgr, sharedPref, mThemeReverseLookup, key);
-        } else if (key.equals(mResources.getString(R.string.pref_week_start_day))) {
+        } else if (key.equals(PREF_WEEK_START_DAY)) {
             setSummary(prefMgr, sharedPref, mWeekStartDayReverseLookup, key);
-        } else if (key.equals(mResources.getString(R.string.pref_on_day_click))) {
+        } else if (key.equals(PREF_ON_DAY_CLICK)) {
             setSummary(prefMgr, sharedPref, mOnDayClickActionReverseLookup, key);
         }
     }
