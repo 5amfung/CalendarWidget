@@ -232,7 +232,7 @@ public class CalendarWidgetProvider extends AppWidgetProvider {
                 boolean isToday = date == todayDate && month == todayMonth && year == todayYear;
 
                 int layoutId = ResourceHelper.layoutCellDay(theme);
-                if (isToday) {
+                if (isToday && isWithinMonth) {
                     layoutId = ResourceHelper.layoutCellToday(theme);
                 } else if (isWithinMonth) {
                     layoutId = ResourceHelper.layoutCellInMonth(theme);
