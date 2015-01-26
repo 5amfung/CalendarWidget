@@ -24,7 +24,7 @@
     </string-array>
 
     <string-array name="on_day_click">
-        <item name="no_action">Hiç birşey</item>
+        <item name="no_action">Birşey yapma</item>
         <item name="view">Günü göster</item>
         <item name="create">Yeni olay oluştur</item>
     </string-array>
