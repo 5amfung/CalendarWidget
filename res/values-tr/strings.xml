@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Calendar Widget</string>
+
+    <string name="previous_month">Önceki ay</string>
+    <string name="next_month">Sonraki ay</string>
+
+    <!-- Used in Settings. -->
+    <string name="widget">Widget</string>
+    <string name="theme">Tema</string>
+    <string name="week_start_day">Hafta başlangıcı</string>
+    <string name="on_day_click">Güne tıklandığında</string>
+
+    <string name="about">Hakkında</string>
+    <string name="version">Versiyon</string>
+    <string name="license">Lisans</string>
+    <string name="license_summary">MIT License</string>
+    <string name="open_source">Açık kaynak</string>
+    <string name="open_source_summary">Kaynak koduna GitHub üzerinden ulaşılabilir</string>
+
+</resources>
